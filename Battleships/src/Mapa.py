@@ -156,13 +156,13 @@ class Mapa:
         
         # coords
         for i in range(10):
-            xxx = self.x - Theme.tile_size//2
-            yyy = self.y + i*Theme.tile_size + Theme.tile_size//2
+            xxx = self.x - Theme.tile_size//2 - Theme.map_border
+            yyy = self.y + i*Theme.tile_size + Theme.tile_size//2 + Theme.map_border
             Text.draw_text_centered(xxx, yyy, str(i+1), Theme.font, Theme.font_size, sdl2.ext.Color(255, 255, 255))
             
         for i in range(10):
-            xxx = self.x + i * Theme.tile_size + Theme.tile_size // 2
-            yyy = self.y - Theme.tile_size // 2
+            xxx = self.x + i * Theme.tile_size + Theme.tile_size // 2 + Theme.map_border
+            yyy = self.y - Theme.tile_size // 2 - Theme.map_border
             Text.draw_text_centered(xxx, yyy, chr(ord('a') + i), Theme.font, Theme.font_size, sdl2.ext.Color(255, 255, 255))
           
         # center
