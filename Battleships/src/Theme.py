@@ -44,7 +44,7 @@ def load():
     global mid_font_size
     global big_font_size
     
-    font_size = 20
+    font_size = 16
     big_font_size = 64
     mid_font_size = 40
     font = sdl2.ext.FontManager(b"FiraCode-Medium.ttf")
