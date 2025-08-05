@@ -165,7 +165,7 @@ class Game:
                 x = self.enemy_hits[0][0]
 
                 min_y = self.get_min_y()
-                if min_y>1 and (self.player.tiles[min_y-1][x] == Mapa.ship or self.player.tiles[min_y-1][x] == Mapa.empty):
+                if min_y>0 and (self.player.tiles[min_y-1][x] == Mapa.ship or self.player.tiles[min_y-1][x] == Mapa.empty):
                    self.enemy_tiles_to_hits.append((x,min_y-1))
                
                 max_y = self.get_max_y()
@@ -177,7 +177,7 @@ class Game:
                 y = self.enemy_hits[0][1]
 
                 min_x = self.get_min_x()
-                if min_x>=1 and (self.player.tiles[y][min_x-1] == Mapa.ship or self.player.tiles[y][min_x-1] == Mapa.empty):
+                if min_x>0 and (self.player.tiles[y][min_x-1] == Mapa.ship or self.player.tiles[y][min_x-1] == Mapa.empty):
                    self.enemy_tiles_to_hits.append((min_x-1,y))
                
                 max_x = self.get_max_x()
