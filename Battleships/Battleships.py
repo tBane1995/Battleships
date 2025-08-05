@@ -7,36 +7,36 @@ import time
 
 sdl2.ext.init()
 
-from src import Window
 from src import Theme
+from src import Window
+from src import Start_Screen
 from src import Game
-
 
 Window.create()
 Theme.load()
-game = Game.Game()
+Window.pages.append(Start_Screen.Start_Screen())
 
 while(True):
 
+    Window.pages[-1].cursor_hover()
+
     # handle events
     events = sdl2.ext.get_events()
-
-    game.cursor_hover()
 
     for event in events:
         if event.type == sdl2.SDL_QUIT:
             exit()
             
-        game.handle_events(event)
+        Window.pages[-1].handle_events(event)
         
 
     # update
-    game.update()
+    Window.pages[-1].update()
 
     # draw
     Window.renderer.color = Window.color
     Window.renderer.clear()
-    game.draw()
+    Window.pages[-1].draw()
     Window.renderer.present()
 
     time.sleep(1/60)

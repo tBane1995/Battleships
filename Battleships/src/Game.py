@@ -22,10 +22,13 @@ class Turn(Enum):
     Enemy_To_Player = 4
 
 class Game:
-    def __init__(self):
-        self.start_game()
+    def __init__(self, difficulty: int):
+        self.start_game(difficulty)
         
-    def start_game(self):
+    def start_game(self, difficulty: int):
+        
+        self.difficulty = difficulty
+        
         self.player = Mapa.Mapa()
         self.player.generate_ships()
         
@@ -51,8 +54,7 @@ class Game:
         
     def create_restart_btn(self):
         self.restart_btn = Button.Button_With_Text("restart", Window.size[0]//2, Window.size[1]//2 + 64, 128, 64)
-        self.restart_btn.set_font_size(Theme.font_size)
-        self.restart_btn.onclick_func = lambda: self.start_game()
+        self.restart_btn.onclick_func = lambda: Window.pages.pop()
         
     def get_min_x(self) -> int:
         min_x = self.enemy_hits[0][0]
@@ -83,17 +85,29 @@ class Game:
         return max_y
 
     
-
+            
+            
     def enemy_turn(self):
        
         if time.time() - self.last_action_time < self.action_time:
             return
-
+        
+        if self.difficulty == 0 and np.random.randint(2)%2==0:
+            x, y = self.player.get_random_empty_tile()
+            
+            if x==-1 and y ==-1:
+                return
+            
+            self.player.attack_tile((x,y))
+            self.current_turn = Turn.Enemy_To_Player
+            self.last_action_time = time.time()
+            return
+                
+        
+        # ai
         if len(self.enemy_hits) == 0:
             
-                
-            x = np.random.randint(self.player.width)
-            y = np.random.randint(self.player.height)
+            x, y = self.player.get_random_empty_or_ship_tile()
 
 
             if self.player.tiles[y][x] == Mapa.empty or self.player.tiles[y][x] == Mapa.ship:
@@ -103,7 +117,8 @@ class Game:
 
                     self.enemy_hits.append((x,y))
                         
-                    if self.player.hit_sunk( (self.enemy_hits[0][0], self.enemy_hits[0][1]), set()):
+                    if self.player.hit_sunk((self.enemy_hits[0][0], self.enemy_hits[0][1]), set()):
+                        self.player.set_miss_around_ship((self.enemy_hits[0][0], self.enemy_hits[0][1]), set())
                         self.enemy_hits = []
                         self.enemy_tiles_to_hits = []
                     else:
@@ -137,6 +152,7 @@ class Game:
                 self.current_turn = Turn.Enemy_To_Player
 
             if self.player.hit_sunk((self.enemy_hits[0][0], self.enemy_hits[0][1]), set()):
+                self.player.set_miss_around_ship((self.enemy_hits[0][0], self.enemy_hits[0][1]), set())
                 self.enemy_hits = []
                 self.enemy_tiles_to_hits = []
 
@@ -183,6 +199,7 @@ class Game:
                     self.current_turn = Turn.Enemy_To_Player          
 
                 if self.player.hit_sunk((self.enemy_hits[0][0], self.enemy_hits[0][1]), set()):
+                    self.player.set_miss_around_ship((self.enemy_hits[0][0], self.enemy_hits[0][1]), set())
                     self.enemy_hits = []
                     self.enemy_tiles_to_hits = []   
          
@@ -215,7 +232,10 @@ class Game:
         
             if self.enemy.tiles[y][x] == Mapa.ship:
                 self.enemy.tiles[y][x] = Mapa.hit
-                    
+            
+            if self.enemy.hit_sunk((x,y), set()):
+                self.enemy.set_miss_around_ship((x,y), set())
+            
             if self.enemy.ships_sunks():
                 self.end_game = True
                 self.player_win = True

@@ -12,7 +12,7 @@
 ![Zrzut ekranu](screenshots/01.png)
 ![Zrzut ekranu](screenshots/02.png)
 ![Zrzut ekranu](screenshots/03.png)
-
+![Zrzut ekranu](screenshots/04.png)
 ## Technologie
 Program stworzono w języku Python3 z wykorzystaniem biblioteki SDL2
   

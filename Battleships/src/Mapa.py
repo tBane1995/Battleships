@@ -23,6 +23,31 @@ class Mapa:
         self.h = Theme.tile_size * 10 + 2 * Theme.map_border
         self.x = Window.size[0]//2 - self.w//2
         self.y = Theme.map_margin_top
+        
+    def get_random_empty_or_ship_tile(self) -> tuple[int, int]:
+            
+            empty_tiles = []
+            for y in range(self.height):
+                for x in range(self.width):
+                    if self.tiles[y][x] == empty or self.tiles[y][x] == ship:
+                        empty_tiles.append((x,y))
+            
+            i = np.random.randint(len(empty_tiles))
+            return empty_tiles[i]
+        
+    def get_random_empty_tile(self) -> tuple[int, int]:
+            
+            empty_tiles = []
+            for y in range(self.height):
+                for x in range(self.width):
+                    if self.tiles[y][x] == empty:
+                        empty_tiles.append((x,y))
+                        
+            if len(empty_tiles) ==0:
+                return (-1,-1)
+                
+            i = np.random.randint(len(empty_tiles))
+            return empty_tiles[i]
   
     def generate_ship(self, len: int):
         
@@ -128,6 +153,34 @@ class Mapa:
         
         return True
         
+    def set_miss_around_ship(self, point: tuple[int, int], check_list: set):
+        
+        if point in check_list:
+            return
+            
+        x, y = point
+        
+        if x<0 or x>=self.width or y<0 or y>=self.height:
+            return
+            
+        check_list.add((x,y))
+        
+        if self.tiles[y][x] == empty:
+            self.tiles[y][x] = miss
+        
+        elif self.tiles[y][x] == hit:
+            self.set_miss_around_ship((x-1,y-1), check_list)
+            self.set_miss_around_ship((x,y-1), check_list)
+            self.set_miss_around_ship((x+1,y-1), check_list)
+            
+            self.set_miss_around_ship((x-1,y), check_list)
+            self.set_miss_around_ship((x+1,y), check_list)
+            
+            self.set_miss_around_ship((x-1,y+1), check_list)
+            self.set_miss_around_ship((x,y+1), check_list)
+            self.set_miss_around_ship((x+1,y+1), check_list)
+        
+    
     def ships_sunks(self):
         sunks = True
         for y in range(self.height):
