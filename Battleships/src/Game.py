@@ -92,22 +92,17 @@ class Game:
         if time.time() - self.last_action_time < self.action_time:
             return
         
-        if self.difficulty == 0 and np.random.randint(2)%2==0:
-            x, y = self.player.get_random_empty_tile()
-            
-            if x==-1 and y ==-1:
-                return
-            
-            self.player.attack_tile((x,y))
-            self.current_turn = Turn.Enemy_To_Player
-            self.last_action_time = time.time()
-            return
-                
-        
         # ai
         if len(self.enemy_hits) == 0:
+            x: int
+            y: int
             
-            x, y = self.player.get_random_empty_or_ship_tile()
+            if self.difficulty == 0 and np.random.randint(2)%2==0:
+                x, y = self.player.get_random_empty_tile()
+                if x==-1 and y ==-1:
+                    return
+            else:
+                x, y = self.player.get_random_empty_or_ship_tile()
 
 
             if self.player.tiles[y][x] == Mapa.empty or self.player.tiles[y][x] == Mapa.ship:
